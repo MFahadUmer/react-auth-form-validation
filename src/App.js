@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import Register from './Register';
 
 const App = () => {
   return (
-    <div>Hey World</div>
-  )
-}
+    <main className="App">
+      <Register />
+    </main>
+  );
+};
 
-export default App
+export default App;
