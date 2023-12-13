@@ -5,9 +5,12 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from './api/axios';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const REGISTER_URL = '/auth/login';
+
 const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
@@ -39,8 +42,6 @@ const Register = () => {
   useEffect(() => {
     const result = PWD_REGEX.test(pwd);
     setValidPwd(result);
-    console.log(result);
-    console.log(pwd);
     const match = pwd === matchPwd;
     setValidMatchPwd(match);
   }, [pwd, matchPwd]);
@@ -49,7 +50,42 @@ const Register = () => {
     setErrMsg('');
   }, [user, pwd, matchPwd]);
 
-  const handleSubmit = async (e) => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const v1 = USER_REGEX.test(user);
+    const v2 = PWD_REGEX.test(pwd);
+    if (!v1 || !v2) {
+      setErrMsg('Invalid username or password.');
+      return;
+    }
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({
+          username: 'kminchelle',
+          password: '0lelplR',
+        }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      console.log(response.data);
+      console.log(JSON.stringify(response.data));
+      setSuccess(true);
+      setUser('');
+      setPwd('');
+      setMatchPwd('');
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+      } else if (err.response?.status === 409) {
+        setErrMsg('Username Taken');
+      } else {
+        setErrMsg('Registration Failed');
+      }
+      errRef.current.focus();
+    }
+  };
 
   return (
     <>
