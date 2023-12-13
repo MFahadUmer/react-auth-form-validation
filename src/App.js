@@ -3,7 +3,7 @@ import Register from './Register';
 
 const App = () => {
   return (
-    <main>
+    <main className="App">
       <Register />
     </main>
   );
